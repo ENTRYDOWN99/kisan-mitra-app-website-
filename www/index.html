@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#FF9933" />
+  <meta name="description" content="Kisan Mitra (किसान मित्र) — Government of India Farmer Price Intelligence & Market Linkage Platform. Get live mandi prices, MSP alerts, government schemes, and connect with buyers." />
+  <meta name="keywords" content="Kisan Mitra, farmer, mandi price, MSP, government schemes, PM-Kisan, agriculture, India" />
+  <meta property="og:title" content="Kisan Mitra — किसान मित्र" />
+  <meta property="og:description" content="Farmer Price Intelligence & Market Linkage Platform by Ministry of Agriculture, Government of India" />
+  <title>Kisan Mitra — किसान मित्र | Farmer Price Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --saffron: #FF9933;
+      --saffron-dark: #E8861F;
+      --saffron-light: #FFB366;
+      --india-green: #138808;
+      --india-green-light: #1AAA0A;
+      --wheat-gold: #F5A623;
+      --navy: #000080;
+      --navy-light: #1A1AB3;
+      --cream: #FFF8E1;
+      --cream-dark: #FFF0C0;
+      --white: #FFFFFF;
+      --danger: #D32F2F;
+      --danger-light: #FF5252;
+      --warning: #F57C00;
+      --success: #2E7D32;
+      --text-primary: #1A1A2E;
+      --text-secondary: #555577;
+      --text-muted: #888899;
+      --border: #E0D8C0;
+      --shadow: 0 2px 12px rgba(0,0,0,0.10);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: 0.25s ease;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
+      background: var(--cream);
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+    input, select, textarea { font-family: inherit; outline: none; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; }
+
+    /* ===== LAYOUT ===== */
+    #app { display: flex; min-height: 100vh; }
+
+    /* ===== SIDEBAR (Desktop) ===== */
+    #sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy) 0%, #0A0A6B 60%, var(--india-green) 100%);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+    .sidebar-header {
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      text-align: center;
+    }
+    .sidebar-logo {
+      font-size: 28px;
+      color: var(--saffron);
+      margin-bottom: 4px;
+    }
+    .sidebar-title {
+      color: var(--white);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .sidebar-subtitle {
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .sidebar-user {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .user-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--saffron);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      color: white;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .user-info { flex: 1; overflow: hidden; }
+    .user-name { color: white; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { color: rgba(255,255,255,0.6); font-size: 11px; }
+    .sidebar-nav { flex: 1; padding: 10px 0; overflow-y: auto; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      border-left: 3px solid transparent;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+    .nav-item.active {
+      background: rgba(255,153,51,0.2);
+      color: var(--saffron);
+      border-left-color: var(--saffron);
+    }
+    .nav-item i { width: 20px; text-align: center; font-size: 16px; }
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .logout-btn {
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      background: none; width: 100%;
+    }
+    .logout-btn:hover { background: rgba(255,82,82,0.15); color: var(--danger-light); }
+
+    /* ===== MAIN CONTENT ===== */
+    #main {
+      flex: 1;
+      margin-left: 260px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ===== TOP BAR ===== */
+    #topbar {
+      background: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .hamburger {
+      display: none;
+      background: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      padding: 4px;
+    }
+    .page-title { font-size: 18px; font-weight: 700; color: var(--navy); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-badge {
+      background: var(--saffron);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .topbar-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background var(--transition);
+      position: relative;
+    }
+    .topbar-icon:hover { background: var(--cream-dark); }
+    .notif-dot {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 8px; height: 8px;
+      background: var(--danger);
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    /* ===== PAGE SECTIONS ===== */
+    .page-section {
+      display: none;
+      flex: 1;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    .page-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title i { color: var(--saffron); }
+
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      border-top: 4px solid var(--saffron);
+      transition: transform var(--transition);
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.green { border-top-color: var(--india-green); }
+    .stat-card.navy { border-top-color: var(--navy); }
+    .stat-card.danger { border-top-color: var(--danger); }
+    .stat-icon { font-size: 24px; margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 800; color: var(--navy); line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ===== ALERT BANNER ===== */
+    .alert-banner {
+      background: linear-gradient(135deg, #FF1744, #D32F2F);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .alert-banner i { font-size: 18px; flex-shrink: 0; }
+    .alert-banner.warning { background: linear-gradient(135deg, var(--warning), #E65100); }
+    .alert-banner.success { background: linear-gradient(135deg, var(--india-green), var(--success)); }
+    .alert-banner.info { background: linear-gradient(135deg, var(--navy), var(--navy-light)); }
+
+    /* ===== PRICE TABLE ===== */
+    .price-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .price-table th {
+      background: var(--navy);
+      color: white;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .price-table th:first-child { border-radius: 8px 0 0 0; }
+    .price-table th:last-child { border-radius: 0 8px 0 0; }
+    .price-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .price-table tr:hover td { background: var(--cream); }
+    .price-table tr:last-child td { border-bottom: none; }
+    .price-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .price-badge.above { background: #E8F5E9; color: var(--india-green); }
+    .price-badge.below { background: #FFEBEE; color: var(--danger); }
+    .price-badge.near { background: #FFF8E1; color: var(--warning); }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--saffron); color: white; }
+    .btn-primary:hover { background: var(--saffron-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,153,51,0.4); }
+    .btn-secondary { background: var(--navy); color: white; }
+    .btn-secondary:hover { background: var(--navy-light); }
+    .btn-success { background: var(--india-green); color: white; }
+    .btn-success:hover { background: var(--success); }
+    .btn-outline { background: transparent; border: 2px solid var(--saffron); color: var(--saffron); }
+    .btn-outline:hover { background: var(--saffron); color: white; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ===== FORM ELEMENTS ===== */
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      background: white;
+      transition: border-color var(--transition);
+    }
+    .form-input:focus { border-color: var(--saffron); }
+    .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      background: white;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    /* ===== CHIP / TAG ===== */
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--cream-dark);
+      color: var(--text-secondary);
+    }
+    .chip.green { background: #E8F5E9; color: var(--india-green); }
+    .chip.orange { background: #FFF3E0; color: var(--warning); }
+    .chip.blue { background: #E3F2FD; color: #1565C0; }
+    .chip.red { background: #FFEBEE; color: var(--danger); }
+
+    /* ===== SCHEME CARD ===== */
+    .scheme-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 14px;
+      border-left: 5px solid var(--india-green);
+      transition: transform var(--transition);
+    }
+    .scheme-card:hover { transform: translateX(4px); }
+    .scheme-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .scheme-name { font-size: 16px; font-weight: 700; color: var(--navy); }
+    .scheme-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+    .scheme-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ===== BOTTOM NAV (Mobile) ===== */
+    #bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      box-shadow: 0 -2px 16px rgba(0,0,0,0.12);
+      z-index: 200;
+      padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    }
+    .bottom-nav-inner {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      transition: color var(--transition);
+      min-width: 60px;
+    }
+    .bottom-nav-item i { font-size: 20px; }
+    .bottom-nav-item.active { color: var(--saffron); }
+    .bottom-nav-item.active i { transform: scale(1.15); }
+
+    /* ===== LOGIN PAGE ===== */
+    #login-page {
+      display: none;
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy) 0%, #0A0A6B 40%, var(--india-green) 100%);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #login-page.active { display: flex; }
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+    }
+    .login-logo { font-size: 56px; margin-bottom: 8px; }
+    .login-title { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
+    .login-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .role-btn {
+      padding: 12px 8px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      background: white;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .role-btn i { font-size: 22px; color: var(--saffron); }
+    .role-btn.selected { border-color: var(--saffron); background: #FFF3E0; color: var(--saffron-dark); }
+    .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 16px 0; }
+    .otp-input {
+      width: 52px; height: 56px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--navy);
+    }
+    .otp-input:focus { border-color: var(--saffron); }
+    .login-divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; color: var(--text-muted); font-size: 12px; }
+    .login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .govt-badge { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 20px; color: var(--text-muted); font-size: 11px; }
+
+    /* ===== PRICE PREDICTION ===== */
+    .prediction-box {
+      background: linear-gradient(135deg, var(--navy), #1A1AB3);
+      color: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .prediction-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .prediction-title { font-size: 14px; font-weight: 600; opacity: 0.8; }
+    .ai-badge { background: var(--saffron); color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .prediction-value { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+    .prediction-direction { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+    .prediction-direction.up { color: #69F0AE; }
+    .prediction-direction.down { color: #FF5252; }
+    .prediction-direction.stable { color: #FFD740; }
+
+    /* ===== LISTING CARD ===== */
+    .listing-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex; gap: 14px;
+      align-items: flex-start;
+    }
+    .listing-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--cream-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .listing-body { flex: 1; }
+    .listing-name { font-size: 16px; font-weight: 700; color: var(--navy); }
+    .listing-meta { font-size: 12px; color: var(--text-muted); margin: 2px 0 6px; }
+    .listing-price { font-size: 22px; font-weight: 800; color: var(--india-green); }
+    .listing-unit { font-size: 12px; color: var(--text-muted); }
+
+    /* ===== STORAGE CARD ===== */
+    .storage-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .storage-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .storage-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+    .storage-distance { font-size: 12px; color: var(--text-muted); }
+    .storage-meta { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+    .capacity-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin: 6px 0; }
+    .capacity-fill { height: 100%; border-radius: 4px; background: var(--india-green); transition: width 0.5s ease; }
+    .capacity-fill.medium { background: var(--warning); }
+    .capacity-fill.high { background: var(--danger); }
+
+    /* ===== PASSBOOK ===== */
+    .transaction-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .transaction-item:last-child { border-bottom: none; }
+    .txn-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .txn-icon.credit { background: #E8F5E9; color: var(--india-green); }
+    .txn-icon.debit { background: #FFEBEE; color: var(--danger); }
+    .txn-body { flex: 1; }
+    .txn-title { font-size: 14px; font-weight: 600; }
+    .txn-date { font-size: 12px; color: var(--text-muted); }
+    .txn-amount { font-size: 16px; font-weight: 700; }
+    .txn-amount.credit { color: var(--india-green); }
+    .txn-amount.debit { color: var(--danger); }
+
+    /* ===== MSP TABLE ===== */
+    .msp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .msp-table th { background: var(--india-green); color: white; padding: 8px 12px; text-align: left; font-weight: 600; }
+    .msp-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .msp-table tr:hover td { background: #E8F5E9; }
+
+    /* ===== CALCULATOR ===== */
+    .calc-result {
+      background: linear-gradient(135deg, var(--india-green), var(--success));
+      color: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      display: none;
+    }
+    .calc-result.show { display: block; }
+    .calc-result.loss { background: linear-gradient(135deg, var(--danger), #B71C1C); }
+    .calc-main { font-size: 36px; font-weight: 800; margin: 8px 0; }
+    .calc-detail { font-size: 13px; opacity: 0.85; }
+
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      display: flex; gap: 10px; align-items: center;
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      margin-bottom: 16px;
+    }
+    .search-bar i { color: var(--text-muted); }
+    .search-bar input { flex: 1; border: none; font-size: 14px; background: transparent; }
+
+    /* ===== KYC BADGE ===== */
+    .kyc-section { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .kyc-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600;
+    }
+    .kyc-badge.verified { background: #E8F5E9; color: var(--india-green); border: 1.5px solid var(--india-green); }
+    .kyc-badge.pending { background: #FFF8E1; color: var(--warning); border: 1.5px solid var(--warning); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1023px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
+      #main { margin-left: 0; padding-bottom: 70px; }
+      #bottom-nav { display: block; }
+      .hamburger { display: flex; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .page-section { padding: 14px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .stat-value { font-size: 22px; }
+      .login-card { padding: 24px 20px; }
+      .role-grid { grid-template-columns: 1fr 1fr; }
+      .card { padding: 14px; }
+    }
+
+    /* ===== OVERLAY ===== */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+    #overlay.show { display: block; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ===== PULSE ANIMATION ===== */
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .pulse { animation: pulse 2s infinite; }
+
+    /* ===== CHART CONTAINER ===== */
+    .chart-container { position: relative; width: 100%; height: 280px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="login-page" class="active">
+  <div class="login-card">
+    <div class="login-logo">🌾</div>
+    <h1 class="login-title">किसान मित्र</h1>
+    <p class="login-subtitle">Kisan Mitra — Farmer Price Intelligence Platform<br>Ministry of Agriculture & Farmers Welfare, GoI</p>
+
+    <!-- Step 1: Mobile -->
+    <div id="login-step-1">
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Mobile Number (मोबाइल नंबर)</label>
+        <input type="tel" id="mobile-input" class="form-input" placeholder="Enter 10-digit mobile number" maxlength="10" value="9876543210" />
+      </div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Select Role (भूमिका चुनें)</label>
+        <div class="role-grid">
+          <button class="role-btn selected" id="role-farmer" onclick="selectRole('farmer',this)">
+            <i class="fas fa-tractor"></i>Farmer<br><small style="font-weight:400;opacity:0.7">किसान</small>
+          </button>
+          <button class="role-btn" id="role-buyer" onclick="selectRole('buyer',this)">
+            <i class="fas fa-store"></i>Buyer<br><small style="font-weight:400;opacity:0.7">खरीदार</small>
+          </button>
+          <button class="role-btn" id="role-officer" onclick="selectRole('officer',this)">
+            <i class="fas fa-user-tie"></i>Officer<br><small style="font-weight:400;opacity:0.7">अधिकारी</small>
+          </button>
+          <button class="role-btn" id="role-fpo" onclick="selectRole('fpo',this)">
+            <i class="fas fa-users"></i>FPO<br><small style="font-weight:400;opacity:0.7">एफपीओ</small>
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="sendOTP()" style="font-size:16px;padding:14px;">
+        <i class="fas fa-mobile-alt"></i> Send OTP / OTP भेजें
+      </button>
+      <div class="login-divider">or</div>
+      <button class="btn btn-outline btn-full" onclick="loginWithAadhaar()">
+        <i class="fas fa-id-card"></i> Login with Aadhaar
+      </button>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div id="login-step-2" style="display:none">
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">OTP sent to <strong id="otp-mobile"></strong></p>
+      <div class="otp-inputs">
+        <input type="text" class="otp-input form-input" maxlength="1" id="otp1" oninput="otpNext(this,'otp2')" />
+        <input type="text" class="otp-input form-input" maxlength="1" id="otp2" oninput="otpNext(this,'otp3')" />
+        <input type="text" class="otp-input form-input" maxlength="1" id="otp3" oninput="otpNext(this,'otp4')" />
+        <input type="text" class="otp-input form-input" maxlength="1" id="otp4" oninput="otpNext(this,null)" />
+      </div>
+      <button class="btn btn-success btn-full" onclick="verifyOTP()" style="font-size:16px;padding:14px;margin-bottom:12px;">
+        <i class="fas fa-check-circle"></i> Verify & Login
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="backToMobile()">← Change Number</button>
+    </div>
+
+    <div class="govt-badge">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/40px-Emblem_of_India.svg.png" height="22" alt="Govt of India" />
+      Government of India Official Platform
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app" style="display:none">
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">🌾</div>
+      <div class="sidebar-title">किसान मित्र</div>
+      <div class="sidebar-subtitle">Kisan Mitra Platform</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-avatar">R</div>
+      <div class="user-info">
+        <div class="user-name" id="user-name-sidebar">Rajesh Kumar</div>
+        <div class="user-role" id="user-role-sidebar">Farmer • Nashik, MH</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showPage('home',this)" id="nav-home">
+        <i class="fas fa-home"></i> Home Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('prices',this)" id="nav-prices">
+        <i class="fas fa-chart-line"></i> Price Intelligence
+      </div>
+      <div class="nav-item" onclick="showPage('sell',this)" id="nav-sell">
+        <i class="fas fa-handshake"></i> Sell Produce
+      </div>
+      <div class="nav-item" onclick="showPage('schemes',this)" id="nav-schemes">
+        <i class="fas fa-file-invoice"></i> Govt Schemes
+      </div>
+      <div class="nav-item" onclick="showPage('calculator',this)" id="nav-calculator">
+        <i class="fas fa-calculator"></i> Cost Calculator
+      </div>
+      <div class="nav-item" onclick="showPage('storage',this)" id="nav-storage">
+        <i class="fas fa-warehouse"></i> Cold Storage
+      </div>
+      <div class="nav-item" onclick="showPage('profile',this)" id="nav-profile">
+        <i class="fas fa-user-circle"></i> Profile & Passbook
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout / निकास
+      </button>
+    </div>
+  </nav>
+
+  <!-- Overlay for mobile sidebar -->
+  <div id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Main Content -->
+  <main id="main">
+    <!-- Top Bar -->
+    <header id="topbar">
+      <div class="topbar-left">
+        <button class="hamburger btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <span class="page-title" id="page-title-display">Home Dashboard</span>
+        <span class="topbar-badge">LIVE</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-icon" title="Notifications">
+          <i class="fas fa-bell"></i>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="topbar-icon" title="Language">
+          <i class="fas fa-language"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== HOME PAGE ===== -->
+    <section class="page-section active" id="page-home">
+      <div class="alert-banner">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>MSP Alert: Tomato price (₹680/q) is BELOW MSP (₹800/q) in Nashik — Call Helpline: 1800-180-1551</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🌾</div>
+          <div class="stat-value">₹1,840</div>
+          <div class="stat-label">Onion Price (Nashik)</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">📈</div>
+          <div class="stat-value">+12%</div>
+          <div class="stat-label">Price vs Last Week</div>
+        </div>
+        <div class="stat-card navy">
+          <div class="stat-icon">🏛️</div>
+          <div class="stat-value">7</div>
+          <div class="stat-label">Active Schemes</div>
+        </div>
+        <div class="stat-card danger">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">MSP Below Alert</div>
+        </div>
+      </div>
+
+      <div class="prediction-box">
+        <div class="prediction-header">
+          <span class="prediction-title">🤖 AI Price Prediction — Onion (Nashik)</span>
+          <span class="ai-badge">AI POWERED</span>
+        </div>
+        <div class="prediction-value">₹1,980–2,120<span style="font-size:18px;font-weight:400">/quintal</span></div>
+        <div class="prediction-direction up">
+          <i class="fas fa-arrow-trend-up"></i> Expected to RISE by 7–15% next week
+        </div>
+        <div style="font-size:12px;opacity:0.7;margin-top:8px;">
+          Reason: Low supply from Rajasthan + festive demand surge. Consider holding 3–5 days.
+          <br>कारण: राजस्थान से कम आपूर्ति + त्योहारी मांग — 3-5 दिन रुकें।
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-rupee-sign"></i> Today's Live Prices (आज के भाव)</div>
+          <span style="font-size:12px;color:var(--text-muted)">Updated: 10:30 AM</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="price-table">
+            <thead>
+              <tr><th>Crop (फसल)</th><th>Mandi</th><th>Modal Price</th><th>MSP</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>🧅 Onion (प्याज)</strong></td>
+                <td>Lasalgaon, MH</td>
+                <td><strong>₹1,840/q</strong></td>
+                <td>₹1,150/q</td>
+                <td><span class="price-badge above">▲ Above MSP</span></td>
+              </tr>
+              <tr>
+                <td><strong>🍅 Tomato (टमाटर)</strong></td>
+                <td>Nashik, MH</td>
+                <td><strong>₹680/q</strong></td>
+                <td>₹800/q</td>
+                <td><span class="price-badge below">▼ Below MSP</span></td>
+              </tr>
+              <tr>
+                <td><strong>🌾 Wheat (गेहूँ)</strong></td>
+                <td>Delhi, DL</td>
+                <td><strong>₹2,250/q</strong></td>
+                <td>₹2,275/q</td>
+                <td><span class="price-badge near">≈ Near MSP</span></td>
+              </tr>
+              <tr>
+                <td><strong>🌽 Maize (मक्का)</strong></td>
+                <td>Gulbarga, KA</td>
+                <td><strong>₹2,180/q</strong></td>
+                <td>₹2,090/q</td>
+                <td><span class="price-badge above">▲ Above MSP</span></td>
+              </tr>
+              <tr>
+                <td><strong>🌾 Rice (धान)</strong></td>
+                <td>Cuttack, OD</td>
+                <td><strong>₹2,300/q</strong></td>
+                <td>₹2,300/q</td>
+                <td><span class="price-badge near">= At MSP</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-calendar-check"></i> Upcoming Deadlines (आगामी तिथियां)</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--cream);border-radius:8px">
+            <div style="font-size:24px">📋</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">PM-Kisan 19th Installment</div>
+              <div style="font-size:12px;color:var(--text-muted)">e-KYC deadline: September 15, 2026</div>
+            </div>
+            <span class="chip orange" style="margin-left:auto">14 days</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--cream);border-radius:8px">
+            <div style="font-size:24px">🌾</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">PMFBY Kharif Enrollment</div>
+              <div style="font-size:12px;color:var(--text-muted)">Last date: September 30, 2026</div>
+            </div>
+            <span class="chip orange" style="margin-left:auto">29 days</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--cream);border-radius:8px">
+            <div style="font-size:24px">💳</div>
+            <div>
+              <div style="font-weight:600;font-size:14px">KCC Renewal Due</div>
+              <div style="font-size:12px;color:var(--text-muted)">Due: October 15, 2026</div>
+            </div>
+            <span class="chip blue" style="margin-left:auto">44 days</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRICES PAGE ===== -->
+    <section class="page-section" id="page-prices">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-chart-area"></i> 30-Day Price Trend (30 दिन का भाव)</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+          <select class="form-select" style="max-width:160px" id="chart-crop" onchange="updateChart()">
+            <option value="onion">🧅 Onion (प्याज)</option>
+            <option value="tomato">🍅 Tomato (टमाटर)</option>
+            <option value="wheat">🌾 Wheat (गेहूँ)</option>
+            <option value="maize">🌽 Maize (मक्का)</option>
+          </select>
+          <select class="form-select" style="max-width:180px" id="chart-mandi" onchange="updateChart()">
+            <option>Lasalgaon, MH</option>
+            <option>Nashik, MH</option>
+            <option>Pune, MH</option>
+            <option>Delhi (Azadpur)</option>
+          </select>
+        </div>
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:12px;font-size:12px">
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:#3B82F6;display:inline-block;border-radius:2px"></span>Modal Price</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;background:var(--saffron);border-style:dashed;display:inline-block"></span>MSP Line</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-table"></i> All Mandi Prices (सभी मंडी भाव)</div>
+        </div>
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" id="mandi-search" placeholder="Search crop or mandi..." oninput="filterMandiTable()" />
+        </div>
+        <div style="overflow-x:auto">
+          <table class="price-table" id="mandi-table">
+            <thead>
+              <tr><th>Crop</th><th>Mandi</th><th>State</th><th>Min</th><th>Modal</th><th>Max</th><th>MSP</th><th>Status</th></tr>
+            </thead>
+            <tbody id="mandi-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SELL PAGE ===== -->
+    <section class="page-section" id="page-sell">
+      <div class="alert-banner success">
+        <i class="fas fa-check-circle"></i>
+        <span>3 buyers are looking for Onion in Nashik region right now!</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-plus-circle"></i> Add New Listing (नई बिक्री)</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label">Crop (फसल)</label>
+            <select class="form-select">
+              <option>🧅 Onion (प्याज)</option>
+              <option>🍅 Tomato (टमाटर)</option>
+              <option>🌾 Wheat (गेहूँ)</option>
+              <option>🥔 Potato (आलू)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quantity (मात्रा) in Qtl</label>
+            <input type="number" class="form-input" placeholder="e.g. 50" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Price (₹/Qtl)</label>
+            <input type="number" class="form-input" placeholder="e.g. 1800" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Grade / Quality</label>
+            <select class="form-select">
+              <option>Grade A (Premium)</option>
+              <option>Grade B (Good)</option>
+              <option>Grade C (Standard)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Available From</label>
+          <input type="date" class="form-input" />
+        </div>
+        <button class="btn btn-success btn-full" onclick="alert('Listing posted successfully! You will receive buyer inquiries shortly.')">
+          <i class="fas fa-paper-plane"></i> Post Listing / लिस्ट करें
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px"><i class="fas fa-list"></i> Your Active Listings</div>
+        <div class="listing-card">
+          <div class="listing-icon">🧅</div>
+          <div class="listing-body">
+            <div class="listing-name">Onion (प्याज) — Grade A</div>
+            <div class="listing-meta">📍 Lasalgaon, Nashik • Posted: Aug 28, 2026</div>
+            <div>
+              <span class="listing-price">₹1,850</span>
+              <span class="listing-unit">/quintal • 80 qtl available</span>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <span class="chip green"><i class="fas fa-eye"></i> 12 Views</span>
+              <span class="chip blue"><i class="fas fa-comment"></i> 3 Inquiries</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary btn-sm">Edit</button>
+          </div>
+        </div>
+        <div class="listing-card">
+          <div class="listing-icon">🍅</div>
+          <div class="listing-body">
+            <div class="listing-name">Tomato (टमाटर) — Grade B</div>
+            <div class="listing-meta">📍 Nashik, MH • Posted: Aug 30, 2026</div>
+            <div>
+              <span class="listing-price" style="color:var(--warning)">₹720</span>
+              <span class="listing-unit">/quintal • 40 qtl available</span>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <span class="chip red">⚠️ Below MSP</span>
+              <span class="chip blue">5 Inquiries</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary btn-sm">Edit</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px"><i class="fas fa-store"></i> Active Buyers Near You</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="padding:14px;background:var(--cream);border-radius:var(--radius-sm);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <div style="font-weight:700;font-size:15px">🏪 Sharma Trading Co.</div>
+              <div style="font-size:12px;color:var(--text-muted)">Mumbai • Needs: Onion 200 qtl • Offering: ₹1,900/q</div>
+              <span class="chip green" style="margin-top:4px">✓ Verified Buyer</span>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="alert('Contact request sent to Sharma Trading Co.!')">Contact</button>
+          </div>
+          <div style="padding:14px;background:var(--cream);border-radius:var(--radius-sm);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <div style="font-weight:700;font-size:15px">🏭 Fresh Exports Pvt Ltd</div>
+              <div style="font-size:12px;color:var(--text-muted)">Pune • Needs: Onion 500 qtl • Offering: ₹1,950/q (export)</div>
+              <span class="chip blue" style="margin-top:4px">Export License</span>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="alert('Contact request sent to Fresh Exports Pvt Ltd!')">Contact</button>
+          </div>
+          <div style="padding:14px;background:var(--cream);border-radius:var(--radius-sm);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <div style="font-weight:700;font-size:15px">🥗 BigBasket Procurement</div>
+              <div style="font-size:12px;color:var(--text-muted)">Nashik • Needs: Tomato 100 qtl • Offering: ₹750/q</div>
+              <span class="chip green" style="margin-top:4px">✓ Verified Buyer</span>
+            </div>
+            <button class="btn btn-success btn-sm" onclick="alert('Contact request sent to BigBasket Procurement!')">Contact</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCHEMES PAGE ===== -->
+    <section class="page-section" id="page-schemes">
+      <div class="card" style="padding:14px">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">MSP Rates 2024-25 (न्यूनतम समर्थन मूल्य)</div>
+        <div style="overflow-x:auto">
+          <table class="msp-table">
+            <thead><tr><th>Crop</th><th>Season</th><th>MSP (₹/qtl)</th></tr></thead>
+            <tbody>
+              <tr><td>🌾 Wheat (गेहूँ)</td><td>Rabi</td><td><strong>₹2,275</strong></td></tr>
+              <tr><td>🌾 Rice (धान)</td><td>Kharif</td><td><strong>₹2,300</strong></td></tr>
+              <tr><td>🌽 Maize (मक्का)</td><td>Kharif</td><td><strong>₹2,090</strong></td></tr>
+              <tr><td>🟡 Tur Dal (अरहर)</td><td>Kharif</td><td><strong>₹7,550</strong></td></tr>
+              <tr><td>🟤 Groundnut (मूँगफली)</td><td>Kharif</td><td><strong>₹6,783</strong></td></tr>
+              <tr><td>🌿 Cotton (कपास)</td><td>Kharif</td><td><strong>₹7,121</strong></td></tr>
+              <tr><td>🌻 Sunflower</td><td>Kharif</td><td><strong>₹7,280</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="scheme-card">
+        <div class="scheme-header">
+          <div>
+            <div class="scheme-name">🌾 PM-Kisan Samman Nidhi</div>
+            <div class="scheme-desc">₹6,000/year direct benefit transfer to eligible farmers in 3 installments</div>
+          </div>
+          <span class="chip green">Active</span>
+        </div>
+        <div style="font-size:13px;margin-bottom:10px"><strong>Your Status:</strong> 18 installments received • Next: Oct 2026</div>
+        <div class="scheme-actions">
+          <button class="btn btn-success btn-sm" onclick="alert('Redirecting to PM-Kisan portal for e-KYC...')"><i class="fas fa-check"></i> Do e-KYC</button>
+          <button class="btn btn-outline btn-sm" onclick="alert('Beneficiary status: ACTIVE\nLast installment: ₹2,000 on 01-Jul-2026')">Check Status</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" style="border-left-color:var(--saffron)">
+        <div class="scheme-header">
+          <div>
+            <div class="scheme-name">🛡️ PMFBY — Pradhan Mantri Fasal Bima Yojana</div>
+            <div class="scheme-desc">Crop insurance at 2% premium for Kharif, 1.5% for Rabi crops</div>
+          </div>
+          <span class="chip orange">Enroll Now</span>
+        </div>
+        <div style="font-size:13px;margin-bottom:10px"><strong>Coverage:</strong> ₹35,000/hectare • <strong>Deadline:</strong> Sep 30, 2026</div>
+        <div class="scheme-actions">
+          <button class="btn btn-primary btn-sm" onclick="alert('Redirecting to PMFBY enrollment portal...')"><i class="fas fa-plus"></i> Enroll Now</button>
+          <button class="btn btn-outline btn-sm" onclick="alert('PMFBY eligibility: ✓ You qualify\nCrop: Onion\nPremium: ₹700 for 1 hectare')">Check Eligibility</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" style="border-left-color:var(--navy)">
+        <div class="scheme-header">
+          <div>
+            <div class="scheme-name">💳 Kisan Credit Card (KCC)</div>
+            <div class="scheme-desc">Short-term credit for farming needs at 4% interest rate</div>
+          </div>
+          <span class="chip blue">Renewal Due</span>
+        </div>
+        <div style="font-size:13px;margin-bottom:10px"><strong>Limit:</strong> ₹3,00,000 • <strong>Interest:</strong> 4% p.a. • <strong>Due:</strong> Oct 15, 2026</div>
+        <div class="scheme-actions">
+          <button class="btn btn-secondary btn-sm" onclick="alert('KCC Renewal process initiated at your nearest SBI branch.\nDocument checklist sent to your mobile.')"><i class="fas fa-sync"></i> Renew KCC</button>
+          <button class="btn btn-outline btn-sm">View Details</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" style="border-left-color:var(--wheat-gold)">
+        <div class="scheme-header">
+          <div>
+            <div class="scheme-name">🏗️ PMKSY — Pradhan Mantri Krishi Sinchai Yojana</div>
+            <div class="scheme-desc">Drip & sprinkler irrigation subsidy up to 90% for small farmers</div>
+          </div>
+          <span class="chip green">Eligible</span>
+        </div>
+        <div style="font-size:13px;margin-bottom:10px"><strong>Subsidy:</strong> 90% (SC/ST), 75% (Small & Marginal) • ₹60,000 max</div>
+        <div class="scheme-actions">
+          <button class="btn btn-success btn-sm" onclick="alert('Application submitted for PMKSY drip irrigation subsidy.\nExpected processing: 30 days')"><i class="fas fa-paper-plane"></i> Apply Now</button>
+          <button class="btn btn-outline btn-sm">Learn More</button>
+        </div>
+      </div>
+
+      <div class="scheme-card" style="border-left-color:var(--danger)">
+        <div class="scheme-header">
+          <div>
+            <div class="scheme-name">🌱 Soil Health Card Scheme</div>
+            <div class="scheme-desc">Free soil testing and personalized fertilizer recommendations</div>
+          </div>
+          <span class="chip green">Active</span>
+        </div>
+        <div style="font-size:13px;margin-bottom:10px"><strong>Your Card:</strong> SHC-MH-2024-NAS-001234 • Valid until: Mar 2026</div>
+        <div class="scheme-actions">
+          <button class="btn btn-outline btn-sm" onclick="alert('Soil Health Card SHC-MH-2024-NAS-001234\nNitrogen: Medium\nPhosphorus: Low — Recommend: DAP 25 kg/acre\nPotassium: High')">View Report</button>
+          <button class="btn btn-secondary btn-sm" onclick="alert('New soil testing booked at: Nashik KVK Center\nDate: Sep 10, 2026')">Book New Test</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CALCULATOR PAGE ===== -->
+    <section class="page-section" id="page-calculator">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px"><i class="fas fa-calculator"></i> Crop Cost & Profit Calculator (लागत-मुनाफा कैलकुलेटर)</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label">Crop (फसल)</label>
+            <select class="form-select" id="calc-crop">
+              <option>🧅 Onion</option><option>🍅 Tomato</option><option>🌾 Wheat</option><option>🥔 Potato</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Area (क्षेत्र) in Acres</label>
+            <input type="number" class="form-input" id="calc-area" placeholder="e.g. 2" value="2" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Seed Cost (₹)</label>
+            <input type="number" class="form-input" id="calc-seed" placeholder="e.g. 4000" value="4000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fertilizer Cost (₹)</label>
+            <input type="number" class="form-input" id="calc-fertilizer" placeholder="e.g. 6000" value="6000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Labour Cost (₹)</label>
+            <input type="number" class="form-input" id="calc-labour" placeholder="e.g. 8000" value="8000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Irrigation Cost (₹)</label>
+            <input type="number" class="form-input" id="calc-irrigation" placeholder="e.g. 3000" value="3000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Other Costs (₹)</label>
+            <input type="number" class="form-input" id="calc-other" placeholder="e.g. 2000" value="2000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expected Yield (Qtl/Acre)</label>
+            <input type="number" class="form-input" id="calc-yield" placeholder="e.g. 80" value="80" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expected Sell Price (₹/Qtl)</label>
+            <input type="number" class="form-input" id="calc-sell-price" placeholder="e.g. 1800" value="1800" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Transport Cost (₹)</label>
+            <input type="number" class="form-input" id="calc-transport" placeholder="e.g. 2500" value="2500" />
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" style="margin-bottom:16px" onclick="calculateProfit()">
+          <i class="fas fa-calculator"></i> Calculate Profit / मुनाफा देखें
+        </button>
+
+        <div class="calc-result" id="calc-result">
+          <div id="calc-verdict" style="font-size:18px;font-weight:700;margin-bottom:8px"></div>
+          <div class="calc-main" id="calc-profit-value"></div>
+          <div class="calc-detail" id="calc-breakdown"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COLD STORAGE PAGE ===== -->
+    <section class="page-section" id="page-storage">
+      <div class="alert-banner info">
+        <i class="fas fa-info-circle"></i>
+        <span>Tip: Cold storage can increase Onion value by 15–25% during off-season (Dec–Mar)</span>
+      </div>
+
+      <div class="storage-card">
+        <div class="storage-header">
+          <div>
+            <div class="storage-name">❄️ Nashik Cold Storage Complex</div>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <span class="chip green">✓ Available</span>
+              <span class="chip blue">NCCD Certified</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="storage-distance">📍 4.2 km away</div>
+            <div style="font-size:16px;font-weight:700;color:var(--india-green)">₹180/qtl/month</div>
+          </div>
+        </div>
+        <div class="storage-meta">Capacity: 5,000 MT • Temp: 0–4°C • Suitable for: Onion, Potato, Garlic</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Capacity used: 65%</div>
+        <div class="capacity-bar"><div class="capacity-fill medium" style="width:65%"></div></div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="alert('Booking request sent to Nashik Cold Storage Complex.\nContact: +91-0253-2312456\nAvailable space: 1,750 MT')">
+          <i class="fas fa-snowflake"></i> Book Storage
+        </button>
+      </div>
+
+      <div class="storage-card">
+        <div class="storage-header">
+          <div>
+            <div class="storage-name">❄️ Agri Cool Hub — Sinnar</div>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <span class="chip green">✓ Available</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="storage-distance">📍 18 km away</div>
+            <div style="font-size:16px;font-weight:700;color:var(--india-green)">₹150/qtl/month</div>
+          </div>
+        </div>
+        <div class="storage-meta">Capacity: 2,500 MT • Temp: 2–8°C • Suitable for: Vegetables, Fruits</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Capacity used: 42%</div>
+        <div class="capacity-bar"><div class="capacity-fill" style="width:42%"></div></div>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="alert('Booking request sent to Agri Cool Hub Sinnar.\nContact: +91-02551-234567')">
+          <i class="fas fa-snowflake"></i> Book Storage
+        </button>
+      </div>
+
+      <div class="storage-card">
+        <div class="storage-header">
+          <div>
+            <div class="storage-name">❄️ Maharashtra State Warehousing</div>
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <span class="chip orange">Limited Space</span>
+              <span class="chip blue">Govt Facility</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="storage-distance">📍 7.8 km away</div>
+            <div style="font-size:16px;font-weight:700;color:var(--india-green)">₹120/qtl/month</div>
+          </div>
+        </div>
+        <div class="storage-meta">Capacity: 10,000 MT • Temp: Ambient + Fumigation • Suitable for: Grains, Pulses</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Capacity used: 88%</div>
+        <div class="capacity-bar"><div class="capacity-fill high" style="width:88%"></div></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:10px" onclick="alert('Waitlist joined for Maharashtra State Warehousing.\nExpected availability: 15 days')">
+          Join Waitlist
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== PROFILE PAGE ===== -->
+    <section class="page-section" id="page-profile">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+          <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--saffron),var(--wheat-gold));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:white" id="profile-avatar-big">R</div>
+          <div>
+            <div style="font-size:22px;font-weight:800;color:var(--navy)" id="profile-name-display">Rajesh Kumar</div>
+            <div style="font-size:13px;color:var(--text-muted)">👨‍🌾 Farmer • Takli, Nashik, Maharashtra</div>
+            <div style="font-size:13px;color:var(--text-muted)">📱 +91 98765 43210 • Member since Jan 2024</div>
+          </div>
+        </div>
+        <div class="kyc-section">
+          <div class="kyc-badge verified"><i class="fas fa-check-circle"></i> Aadhaar Verified</div>
+          <div class="kyc-badge verified"><i class="fas fa-check-circle"></i> PM-Kisan Active</div>
+          <div class="kyc-badge verified"><i class="fas fa-check-circle"></i> KCC Holder</div>
+          <div class="kyc-badge pending"><i class="fas fa-clock"></i> PMFBY — Pending</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:var(--cream);padding:12px;border-radius:var(--radius-sm)">
+            <div style="font-size:12px;color:var(--text-muted)">Land Holding</div>
+            <div style="font-size:18px;font-weight:700;color:var(--navy)">2.5 Acres</div>
+          </div>
+          <div style="background:var(--cream);padding:12px;border-radius:var(--radius-sm)">
+            <div style="font-size:12px;color:var(--text-muted)">Primary Crop</div>
+            <div style="font-size:18px;font-weight:700;color:var(--navy)">🧅 Onion</div>
+          </div>
+          <div style="background:var(--cream);padding:12px;border-radius:var(--radius-sm)">
+            <div style="font-size:12px;color:var(--text-muted)">Total Earnings (2026)</div>
+            <div style="font-size:18px;font-weight:700;color:var(--india-green)">₹2,34,500</div>
+          </div>
+          <div style="background:var(--cream);padding:12px;border-radius:var(--radius-sm)">
+            <div style="font-size:12px;color:var(--text-muted)">Transactions (2026)</div>
+            <div style="font-size:18px;font-weight:700;color:var(--navy)">14</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" onclick="alert('Digital Income Certificate generated!\nCertificate No: DIC-MH-2026-NAS-001234\nTotal Income: ₹2,34,500\nValid for: Bank loan, Scheme application')">
+            <i class="fas fa-file-pdf"></i> Download Income Certificate
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="alert('Redirecting to profile edit page...')">
+            <i class="fas fa-edit"></i> Edit Profile
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px"><i class="fas fa-book-open"></i> Digital Passbook (डिजिटल पासबुक)</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--navy),var(--navy-light));color:white;padding:16px;border-radius:var(--radius-sm);margin-bottom:16px">
+          <div>
+            <div style="font-size:12px;opacity:0.7">Total Balance (कुल शेष)</div>
+            <div style="font-size:32px;font-weight:800">₹2,34,500</div>
+          </div>
+          <i class="fas fa-wallet" style="font-size:36px;opacity:0.4"></i>
+        </div>
+        <div class="transaction-item">
+          <div class="txn-icon credit"><i class="fas fa-arrow-down"></i></div>
+          <div class="txn-body">
+            <div class="txn-title">Onion Sale — Lasalgaon Mandi</div>
+            <div class="txn-date">Aug 28, 2026 • 60 qtl @ ₹1,850</div>
+          </div>
+          <div class="txn-amount credit">+₹1,11,000</div>
+        </div>
+        <div class="transaction-item">
+          <div class="txn-icon credit"><i class="fas fa-arrow-down"></i></div>
+          <div class="txn-body">
+            <div class="txn-title">PM-Kisan 18th Installment</div>
+            <div class="txn-date">Aug 01, 2026 • Direct Bank Transfer</div>
+          </div>
+          <div class="txn-amount credit">+₹2,000</div>
+        </div>
+        <div class="transaction-item">
+          <div class="txn-icon debit"><i class="fas fa-arrow-up"></i></div>
+          <div class="txn-body">
+            <div class="txn-title">Fertilizer Purchase — Nashik Agri Store</div>
+            <div class="txn-date">Aug 15, 2026 • DAP + Urea</div>
+          </div>
+          <div class="txn-amount debit">−₹8,500</div>
+        </div>
+        <div class="transaction-item">
+          <div class="txn-icon credit"><i class="fas fa-arrow-down"></i></div>
+          <div class="txn-body">
+            <div class="txn-title">Tomato Sale — Nashik Mandi</div>
+            <div class="txn-date">Jul 20, 2026 • 30 qtl @ ₹720</div>
+          </div>
+          <div class="txn-amount credit">+₹21,600</div>
+        </div>
+        <div class="transaction-item">
+          <div class="txn-icon debit"><i class="fas fa-arrow-up"></i></div>
+          <div class="txn-body">
+            <div class="txn-title">Cold Storage — Nashik Complex</div>
+            <div class="txn-date">Jul 10, 2026 • 3 months advance</div>
+          </div>
+          <div class="txn-amount debit">−₹16,200</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation (Mobile) -->
+  <nav id="bottom-nav">
+    <div class="bottom-nav-inner">
+      <div class="bottom-nav-item active" id="bnav-home" onclick="showPage('home',null,'bnav-home')">
+        <i class="fas fa-home"></i><span>Home</span>
+      </div>
+      <div class="bottom-nav-item" id="bnav-prices" onclick="showPage('prices',null,'bnav-prices')">
+        <i class="fas fa-chart-line"></i><span>Prices</span>
+      </div>
+      <div class="bottom-nav-item" id="bnav-sell" onclick="showPage('sell',null,'bnav-sell')">
+        <i class="fas fa-handshake"></i><span>Sell</span>
+      </div>
+      <div class="bottom-nav-item" id="bnav-schemes" onclick="showPage('schemes',null,'bnav-schemes')">
+        <i class="fas fa-file-invoice"></i><span>Schemes</span>
+      </div>
+      <div class="bottom-nav-item" id="bnav-profile" onclick="showPage('profile',null,'bnav-profile')">
+        <i class="fas fa-user"></i><span>Profile</span>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!-- ===== MANDI DATA ===== -->
+<script>
+const MANDI_DATA = [
+  { crop:'🧅 Onion', mandi:'Lasalgaon', state:'Maharashtra', min:1600, modal:1840, max:2100, msp:1150 },
+  { crop:'🧅 Onion', mandi:'Pune', state:'Maharashtra', min:1700, modal:1920, max:2200, msp:1150 },
+  { crop:'🧅 Onion', mandi:'Solapur', state:'Maharashtra', min:1550, modal:1780, max:2050, msp:1150 },
+  { crop:'🍅 Tomato', mandi:'Nashik', state:'Maharashtra', min:580, modal:680, max:790, msp:800 },
+  { crop:'🍅 Tomato', mandi:'Hosur', state:'Tamil Nadu', min:900, modal:1050, max:1200, msp:800 },
+  { crop:'🌾 Wheat', mandi:'Delhi (Azadpur)', state:'Delhi', min:2100, modal:2250, max:2400, msp:2275 },
+  { crop:'🌾 Wheat', mandi:'Amritsar', state:'Punjab', min:2200, modal:2310, max:2450, msp:2275 },
+  { crop:'🌽 Maize', mandi:'Gulbarga', state:'Karnataka', min:2000, modal:2180, max:2350, msp:2090 },
+  { crop:'🌽 Maize', mandi:'Nizamabad', state:'Telangana', min:1950, modal:2140, max:2300, msp:2090 },
+  { crop:'🌾 Rice', mandi:'Cuttack', state:'Odisha', min:2100, modal:2300, max:2500, msp:2300 },
+  { crop:'🥔 Potato', mandi:'Agra', state:'Uttar Pradesh', min:800, modal:950, max:1100, msp:null },
+  { crop:'🥔 Potato', mandi:'Kolkata', state:'West Bengal', min:880, modal:1020, max:1180, msp:null },
+  { crop:'🌿 Cotton', mandi:'Akola', state:'Maharashtra', min:6800, modal:7200, max:7600, msp:7121 },
+  { crop:'🟡 Tur Dal', mandi:'Latur', state:'Maharashtra', min:7000, modal:7400, max:7800, msp:7550 },
+];
+
+const CHART_DATA = {
+  onion: { msp: 1150, prices: [1400,1380,1420,1450,1500,1480,1520,1600,1650,1700,1720,1680,1750,1800,1820,1780,1830,1860,1840,1880,1900,1850,1920,1950,1900,1840,1860,1900,1920,1840] },
+  tomato: { msp: 800, prices: [900,920,880,850,820,800,780,760,740,720,700,680,660,640,680,700,720,690,680,670,680,700,720,710,690,680,700,720,700,680] },
+  wheat: { msp: 2275, prices: [2180,2200,2220,2250,2260,2275,2280,2290,2300,2285,2275,2260,2250,2240,2230,2250,2260,2270,2280,2275,2260,2250,2260,2275,2280,2270,2250,2240,2260,2250] },
+  maize: { msp: 2090, prices: [2000,2020,2050,2080,2100,2120,2150,2180,2200,2190,2180,2160,2140,2120,2100,2110,2120,2140,2160,2180,2200,2190,2180,2160,2140,2160,2180,2200,2190,2180] },
+};
+
+// ===== GLOBAL STATE =====
+let selectedRole = 'farmer';
+let priceChart = null;
+let currentPage = 'home';
+
+// ===== ROLE LABELS =====
+const roleUsers = {
+  farmer: { name: 'Rajesh Kumar', role: 'Farmer • Nashik, MH', avatar: 'R' },
+  buyer: { name: 'Sharma Trading Co.', role: 'Buyer • Mumbai, MH', avatar: 'S' },
+  officer: { name: 'Priya Desai', role: 'Dist. Agri Officer • Nashik', avatar: 'P' },
+  fpo: { name: 'Nashik FPO Ltd', role: 'FPO • Nashik, MH', avatar: 'N' },
+};
+
+// ===== UTILITY =====
+function formatINR(n) {
+  if (n === null || n === undefined) return '—';
+  return '₹' + n.toLocaleString('en-IN');
+}
+
+// ===== LOGIN FLOW =====
+function selectRole(role, btn) {
+  selectedRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function sendOTP() {
+  const mob = document.getElementById('mobile-input').value.trim();
+  if (mob.length < 10) { alert('Please enter a valid 10-digit mobile number'); return; }
+  document.getElementById('login-step-1').style.display = 'none';
+  document.getElementById('login-step-2').style.display = 'block';
+  document.getElementById('otp-mobile').textContent = '+91 ' + mob;
+  document.getElementById('otp1').focus();
+}
+
+function backToMobile() {
+  document.getElementById('login-step-2').style.display = 'none';
+  document.getElementById('login-step-1').style.display = 'block';
+}
+
+function loginWithAadhaar() { alert('Aadhaar-based login via DigiLocker will be available in the next update.'); }
+
+function otpNext(el, nextId) {
+  if (el.value && nextId) document.getElementById(nextId).focus();
+}
+
+function verifyOTP() {
+  const otp = ['otp1','otp2','otp3','otp4'].map(id => document.getElementById(id).value).join('');
+  if (otp.length < 4) { alert('Please enter all 4 OTP digits'); return; }
+  loginUser();
+}
+
+function loginUser() {
+  const user = roleUsers[selectedRole];
+  document.getElementById('login-page').classList.remove('active');
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('user-name-sidebar').textContent = user.name;
+  document.getElementById('user-role-sidebar').textContent = user.role;
+  document.getElementById('user-avatar').textContent = user.avatar;
+  document.getElementById('profile-name-display').textContent = user.name;
+  document.getElementById('profile-avatar-big').textContent = user.avatar;
+  initMandiTable();
+  initChart();
+}
+
+function logout() {
+  if (!confirm('Logout from Kisan Mitra? / क्या आप लॉगआउट करना चाहते हैं?')) return;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-page').classList.add('active');
+  document.getElementById('login-step-2').style.display = 'none';
+  document.getElementById('login-step-1').style.display = 'block';
+  ['otp1','otp2','otp3','otp4'].forEach(id => document.getElementById(id).value = '');
+}
+
+// ===== NAVIGATION =====
+const PAGE_TITLES = {
+  home: 'Home Dashboard',
+  prices: 'Price Intelligence',
+  sell: 'Sell Produce',
+  schemes: 'Govt Schemes',
+  calculator: 'Cost Calculator',
+  storage: 'Cold Storage',
+  profile: 'Profile & Passbook',
+};
+
+function showPage(page, navEl, bnavId) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  if (bnavId) document.getElementById(bnavId).classList.add('active');
+  const sidebarNavId = 'nav-' + page;
+  if (document.getElementById(sidebarNavId)) document.getElementById(sidebarNavId).classList.add('active');
+  document.getElementById('page-title-display').textContent = PAGE_TITLES[page] || page;
+  currentPage = page;
+  closeSidebar();
+  if (page === 'prices' && !priceChart) initChart();
+  window.scrollTo(0, 0);
+}
+
+// ===== SIDEBAR TOGGLE =====
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ===== MANDI TABLE =====
+function getStatus(modal, msp) {
+  if (!msp) return '<span class="price-badge near">No MSP</span>';
+  if (modal >= msp * 1.05) return '<span class="price-badge above">▲ Above</span>';
+  if (modal < msp * 0.95) return '<span class="price-badge below">▼ Below</span>';
+  return '<span class="price-badge near">≈ Near</span>';
+}
+
+function initMandiTable() {
+  renderMandiTable(MANDI_DATA);
+}
+
+function renderMandiTable(data) {
+  const tbody = document.getElementById('mandi-tbody');
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td><strong>${r.crop}</strong></td>
+      <td>${r.mandi}</td>
+      <td>${r.state}</td>
+      <td>${formatINR(r.min)}</td>
+      <td><strong>${formatINR(r.modal)}</strong></td>
+      <td>${formatINR(r.max)}</td>
+      <td>${r.msp ? formatINR(r.msp) : '—'}</td>
+      <td>${getStatus(r.modal, r.msp)}</td>
+    </tr>
+  `).join('');
+}
+
+function filterMandiTable() {
+  const q = document.getElementById('mandi-search').value.toLowerCase();
+  const filtered = MANDI_DATA.filter(r =>
+    r.crop.toLowerCase().includes(q) ||
+    r.mandi.toLowerCase().includes(q) ||
+    r.state.toLowerCase().includes(q)
+  );
+  renderMandiTable(filtered);
+}
+
+// ===== PRICE CHART =====
+function initChart() {
+  const ctx = document.getElementById('priceChart');
+  if (!ctx) return;
+  const crop = document.getElementById('chart-crop') ? document.getElementById('chart-crop').value : 'onion';
+  const data = CHART_DATA[crop] || CHART_DATA.onion;
+  const labels = Array.from({length: 30}, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - 29 + i);
+    return d.toLocaleDateString('en-IN', {day:'2-digit', month:'short'});
+  });
+
+  if (priceChart) priceChart.destroy();
+  priceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Modal Price (₹/qtl)',
+          data: data.prices,
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59,130,246,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 2,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4,
+        },
+        {
+          label: 'MSP (₹/qtl)',
+          data: Array(30).fill(data.msp),
+          borderColor: '#FF9933',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => '₹' + ctx.raw.toLocaleString('en-IN') + '/qtl'
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { maxRotation: 45, font: { size: 10 } } },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { callback: v => '₹' + v.toLocaleString('en-IN'), font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+function updateChart() { initChart(); }
+
+// ===== CALCULATOR =====
+function calculateProfit() {
+  const area = parseFloat(document.getElementById('calc-area').value) || 0;
+  const seed = parseFloat(document.getElementById('calc-seed').value) || 0;
+  const fert = parseFloat(document.getElementById('calc-fertilizer').value) || 0;
+  const labour = parseFloat(document.getElementById('calc-labour').value) || 0;
+  const irr = parseFloat(document.getElementById('calc-irrigation').value) || 0;
+  const other = parseFloat(document.getElementById('calc-other').value) || 0;
+  const transport = parseFloat(document.getElementById('calc-transport').value) || 0;
+  const yieldQtl = parseFloat(document.getElementById('calc-yield').value) || 0;
+  const sellPrice = parseFloat(document.getElementById('calc-sell-price').value) || 0;
+
+  const totalCost = seed + fert + labour + irr + other + transport;
+  const totalYield = yieldQtl * area;
+  const revenue = totalYield * sellPrice;
+  const profit = revenue - totalCost;
+  const breakeven = totalYield > 0 ? totalCost / totalYield : 0;
+  const roi = totalCost > 0 ? ((profit / totalCost) * 100) : 0;
+
+  const resultEl = document.getElementById('calc-result');
+  const verdictEl = document.getElementById('calc-verdict');
+  const valueEl = document.getElementById('calc-profit-value');
+  const breakEl = document.getElementById('calc-breakdown');
+
+  resultEl.classList.add('show');
+  if (profit >= 0) {
+    resultEl.classList.remove('loss');
+    verdictEl.textContent = '✅ SELL — Profitable! / फायदेमंद — बेचें!';
+    valueEl.textContent = '+ ' + formatINR(Math.round(profit)) + ' Profit';
+  } else {
+    resultEl.classList.add('loss');
+    verdictEl.textContent = '⚠️ HOLD — Loss at current price / इस भाव पर घाटा!';
+    valueEl.textContent = '− ' + formatINR(Math.round(Math.abs(profit))) + ' Loss';
+  }
+  breakEl.innerHTML = `
+    Total Cost: ${formatINR(Math.round(totalCost))} &nbsp;|&nbsp;
+    Revenue: ${formatINR(Math.round(revenue))} &nbsp;|&nbsp;
+    Break-even: ${formatINR(Math.round(breakeven))}/qtl &nbsp;|&nbsp;
+    ROI: ${roi.toFixed(1)}%
+  `;
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  initMandiTable();
+});
+</script>
+</body>
+</html>

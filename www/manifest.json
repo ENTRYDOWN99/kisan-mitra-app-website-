@@ -1,0 +1,19 @@
+{
+  "name": "Kisan Mitra — किसान मित्र",
+  "short_name": "Kisan Mitra",
+  "description": "Farmer Price Intelligence & Market Linkage Platform by Government of India",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000080",
+  "theme_color": "#FF9933",
+  "lang": "en-IN",
+  "icons": [
+    { "src": "/assets/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["agriculture", "government", "productivity"],
+  "shortcuts": [
+    { "name": "Price Intelligence", "url": "/#prices", "description": "View live mandi prices" },
+    { "name": "Govt Schemes", "url": "/#schemes", "description": "Browse government schemes" }
+  ]
+}

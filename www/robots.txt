@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kisan-mitra-app-website.vercel.app/sitemap.xml
