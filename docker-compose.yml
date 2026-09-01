@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    env_file: ./backend/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - kisan-network
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: kisanmitra
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d kisanmitra"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - kisan-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - kisan-network
+
+  migrate:
+    build: ./backend
+    command: node migrations/run.js
+    env_file: ./backend/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - kisan-network
+
+  seed:
+    build: ./backend
+    command: node seeds/run.js
+    env_file: ./backend/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - kisan-network
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  kisan-network:
+    driver: bridge

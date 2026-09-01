@@ -1,0 +1,69 @@
+# =============================================================
+# KISAN MITRA — .gitignore
+# =============================================================
+
+# --- Dependencies ---
+node_modules/
+package-lock.json
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Build output ---
+dist/
+build/
+.cache/
+out/
+
+# --- Environment & Secrets (NEVER commit these) ---
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.local
+backend/.env.*.local
+
+# --- Android local config ---
+android/local.properties
+android/.gradle/
+android/app/google-services.json
+android/app/release/
+*.keystore
+*.jks
+
+# --- PWA generated ---
+workbox-*.js
+precache-manifest.*.js
+
+# --- Test / Coverage ---
+coverage/
+.nyc_output/
+test-results/
+
+# --- Docker ---
+# Keep docker-compose.yml but ignore overrides
+docker-compose.override.yml
+
+# --- Temporary ---
+*.tmp
+*.bak
+*.orig

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kisan Mitra</string>
+    <string name="title_activity_main">Kisan Mitra</string>
+    <string name="package_name">in.gov.agriculture.kisanmitra</string>
+    <string name="custom_url_scheme">in.gov.agriculture.kisanmitra</string>
+</resources>

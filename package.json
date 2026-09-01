@@ -1,0 +1,40 @@
+{
+  "name": "kisan-mitra",
+  "version": "1.0.0",
+  "description": "KISAN MITRA (किसान मित्र) — Farmer Price Intelligence & Market Linkage Platform, Government of India",
+  "main": "Index.html",
+  "scripts": {
+    "start": "npx http-server www -p 3000 -c-1 --cors -o",
+    "dev": "npx http-server www -p 3000 -c-1 --cors",
+    "serve": "npx http-server www -p 8080 -c3600",
+    "test": "echo \"No test suite configured yet\" && exit 0"
+  },
+  "keywords": [
+    "kisan",
+    "farmer",
+    "agriculture",
+    "mandi",
+    "msp",
+    "government-of-india",
+    "pwa",
+    "price-intelligence",
+    "market-linkage"
+  ],
+  "author": "Ministry of Agriculture & Farmers Welfare, Government of India",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/kisan-mitra.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/core": "^8.4.1"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.4.1"
+  }
+}
