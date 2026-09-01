@@ -681,13 +681,16 @@
     <!-- Step 2: OTP -->
     <div id="login-step-2" style="display:none">
       <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px;">OTP sent to <strong id="otp-mobile"></strong></p>
-      <div class="otp-inputs">
+      <div class="otp-inputs" id="login-otp-group">
         <input type="text" class="otp-input form-input" maxlength="1" id="otp1" oninput="otpNext(this,'otp2')" />
         <input type="text" class="otp-input form-input" maxlength="1" id="otp2" oninput="otpNext(this,'otp3')" />
         <input type="text" class="otp-input form-input" maxlength="1" id="otp3" oninput="otpNext(this,'otp4')" />
         <input type="text" class="otp-input form-input" maxlength="1" id="otp4" oninput="otpNext(this,null)" />
       </div>
-      <button class="btn btn-success btn-full" onclick="verifyOTP()" style="font-size:16px;padding:14px;margin-bottom:12px;">
+      <div class="demo-otp-hint" style="font-size:12px;color:var(--warning);background:#FFF3E0;border:1px solid #FFE0B2;border-radius:var(--radius-sm);padding:8px 12px;margin:12px 0 16px;text-align:center;font-weight:500;">
+        Demo OTP: 1234 (मॉक मोड — कोई भी वास्तविक OTP नहीं भेजा जाता)
+      </div>
+      <button class="btn btn-success btn-full" id="login-verify-btn" onclick="verifyOTP()" style="font-size:16px;padding:14px;margin-bottom:12px;">
         <i class="fas fa-check-circle"></i> Verify & Login
       </button>
       <button class="btn btn-outline btn-sm" onclick="backToMobile()">← Change Number</button>
